@@ -1,12 +1,13 @@
 import express from 'express';
 import 'dotenv/config';
-import './database/connectDB.js';
+import { connectDB } from './database/connectDB.js';
 import { router } from './routes/auth.routes.js';
 
 const app = express();
 app.use(express.json());
+connectDB();
 
-app.use('/api/v1', router);
+app.use('/api/v1/auth', router);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

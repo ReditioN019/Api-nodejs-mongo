@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { login, register } from '../controllers/auth.controller.js';
 import { body } from 'express-validator';
-import { validarCampos } from '../middlewares/validarCampos.js';
+import { login, register, infoUser } from '../controllers/auth.controller.js';
+import { validarCampos, validaTokenUser } from '../middlewares/index.js';
 
 export const router = Router();
 
@@ -10,16 +10,7 @@ router.post( '/register', [
     body('email', 'Formato de email incorrecto').trim().isEmail().normalizeEmail(), 
     body('password', 'La contraseña debe tener mínimo 6 caracteres')
         .trim().isLength({ min: 6}),
-    body('password', 'Formato password incorrecta')
-        .custom((value, {req}) => {
-            //toma el value (en este caso el password) y obtiene el required y saca el repassword para validarlo 
-            if(value !== req.body.repassword){
-                //En realidad esto debería hacerlo el frontend, no el backend 
-                throw new Error('Las contraseñas no coinciden');
-            }
-            return value;
-        }),
-        validarCampos
+    validarCampos,
 ], register);
 
 router.post('/login', [
@@ -28,3 +19,5 @@ router.post('/login', [
     body('password', 'La contraseña debe tener mínimo 6 caracteres')
         .trim().isLength({ min: 6}),
 ], login);
+
+router.get( '/protected', validaTokenUser, infoUser );
