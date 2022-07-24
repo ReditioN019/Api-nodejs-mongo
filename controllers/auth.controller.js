@@ -18,9 +18,11 @@ export const register = async (req, res) => {
         const user = new User({ email, password }); //creo una nueva instancia de veterinario. (la que traigo del modelo)
         const nuevoUsuario = await user.save();//save: creo el nuevo registro
 
-        //JWT, token 
+        //generar JWT
+        const { token, duracionToken } = generateToken(user._id);
+        generateRefreshToken(user._id, res);
 
-        return res.status(201).json({ ok: true, nuevoUsuario });
+        return res.status(201).json({ token, duracionToken });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Error de servidor' });

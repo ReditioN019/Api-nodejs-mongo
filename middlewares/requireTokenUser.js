@@ -12,7 +12,7 @@ export const requireTokenUser = async (req, res, next) => {
 
             const { id } = jwt.verify(token, process.env.JWT_SECRET);
             
-            req.id = await User.findById(id).select( "-password" );
+            req.id = await User.findById( id ).select( "-password" );
 
             return next();
 
